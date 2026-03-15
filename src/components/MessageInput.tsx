@@ -5,7 +5,7 @@ interface MessageInputProps {
     isSending: boolean;
 }
 
-const author = "Me";
+const AUTHOR_NAME = "You";
 
 export const MessageInput = memo(({onSend, isSending}: MessageInputProps) => {
     const [text, setText] = useState('');
@@ -14,7 +14,7 @@ export const MessageInput = memo(({onSend, isSending}: MessageInputProps) => {
         e.preventDefault();
         if (!text.trim()) return;
 
-        onSend(author, text);
+        onSend(AUTHOR_NAME, text);
         setText('');
     };
 
