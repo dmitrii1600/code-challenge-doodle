@@ -1,0 +1,40 @@
+import type {Message, SendMessagePayload} from '../types';
+
+const API_URL = import.meta.env.VITE_API_BASE_URL + '/messages';
+const TOKEN = import.meta.env.VITE_API_TOKEN;
+
+const headers = {
+    'Authorization': `Bearer ${TOKEN}`,
+    'Content-Type': 'application/json',
+};
+
+export const fetchMessages = async (after?: string, limit: number = 20): Promise<Message[]> => {
+    const url = new URL(API_URL);
+
+    if (after) {
+        url.searchParams.append('after', after);
+    }
+    url.searchParams.append('limit', limit.toString());
+
+    const response = await fetch(url.toString(), {method: 'GET', headers});
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+    }
+
+    return response.json();
+};
+
+export const sendMessage = async (payload: SendMessagePayload): Promise<Message> => {
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to send message');
+    }
+
+    return response.json();
+};
