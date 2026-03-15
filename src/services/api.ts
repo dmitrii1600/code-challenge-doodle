@@ -8,12 +8,13 @@ const headers = {
     'Content-Type': 'application/json',
 };
 
-export const fetchMessages = async (after?: string, limit: number = 20): Promise<Message[]> => {
+export const fetchMessages = async (before: string = new Date().toISOString(), limit: number = 10): Promise<Message[]> => {
     const url = new URL(API_URL);
 
-    if (after) {
-        url.searchParams.append('after', after);
+    if (before) {
+        url.searchParams.append('before', before);
     }
+
     url.searchParams.append('limit', limit.toString());
 
     const response = await fetch(url.toString(), {method: 'GET', headers});
