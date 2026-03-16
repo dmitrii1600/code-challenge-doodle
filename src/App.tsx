@@ -1,4 +1,4 @@
-import {useCallback, useLayoutEffect, useRef} from "react";
+import {useCallback, useLayoutEffect, useRef, type UIEvent} from "react";
 import {useMessages} from './hooks/useMessages';
 import {MessageItem} from './components/MessageItem';
 import {MessageInput} from './components/MessageInput';
@@ -15,17 +15,15 @@ function App() {
         if (!container) return;
 
         if (prevScrollHeightRef.current > 0) {
-            const heightDiff = container.scrollHeight - prevScrollHeightRef.current;
-            container.scrollTop = heightDiff;
+            container.scrollTop = container.scrollHeight - prevScrollHeightRef.current;
             prevScrollHeightRef.current = 0;
-        } else if (messages.length > 0) {
+        } else if (isInitialLoad.current && messages.length > 0) {
             container.scrollTop = container.scrollHeight;
             isInitialLoad.current = false;
         }
     }, [messages.length]);
 
-
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const handleScroll = (e: UIEvent<HTMLDivElement>) => {
         const container = e.currentTarget;
 
         if (container.scrollTop < 50 && hasNextPage && !isFetchingMore && !isLoading) {
