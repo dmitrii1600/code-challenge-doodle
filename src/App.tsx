@@ -5,7 +5,9 @@ import {MessageInput} from './components/MessageInput';
 import './App.css';
 
 function App() {
-    const {messages, isLoading, sendMessage, loadMore, hasNextPage, isFetchingMore, isSending} = useMessages();
+    const {
+        messages, isLoading, sendMessage, loadMore, hasNextPage, isFetchingMore, isSending, isError
+    } = useMessages();
 
     // We use refs instead of state for scroll tracking because updating them
     // doesn't trigger component re-renders, ensuring a smooth 60fps scrolling experience.
@@ -68,8 +70,9 @@ function App() {
                 ref={scrollRef}
                 onScroll={handleScroll}
             >
-                {/* Displaying inline loading states for better UX during network requests */}
-                {isFetchingMore && <div className="loading-more">Loading history...</div>}
+                {isError && (<div className="error">Failed to load chat history. Please refresh the page.</div>)}
+
+                {isFetchingMore && <div className="loading">Loading history...</div>}
 
                 {messages.map((msg) => (
                     <MessageItem key={msg._id} message={msg}/>

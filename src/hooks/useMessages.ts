@@ -10,7 +10,9 @@ export const useMessages = () => {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-        isLoading
+        isLoading,
+        isError,
+        error,
     } = useInfiniteQuery({
         queryKey: ['messages'],
         queryFn: ({pageParam}) => fetchMessages(pageParam),
@@ -48,6 +50,8 @@ export const useMessages = () => {
         isLoading,
         sendMessage,
         isSending,
+        isError,
+        error,
         loadMore: fetchNextPage,
         hasNextPage,
         isFetchingMore: isFetchingNextPage
