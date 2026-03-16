@@ -13,7 +13,7 @@ export const MessageItem = memo(({message}: MessageItemProps) => {
         <div className={`message-item ${isMine ? 'mine' : ''}`}>
             <span className="message-author">{decodeText(message.author)}</span>
             <p className="message-text">{decodeText(message.message)}</p>
-            <span className="message-time">{formatDate(message.createdAt)}</span>
+            <time className="message-time">{formatDate(message.createdAt)}</time>
         </div>
     );
 });
