@@ -17,21 +17,30 @@ function App() {
     // This is strictly required for scroll manipulations to prevent visual flickering/jumping.
     useLayoutEffect(() => {
         const container = scrollRef.current;
-        if (!container) return;
+
+        // Early return: if container is not ready or there are no messages, do nothing
+        if (!container || messages.length === 0) return;
 
         // Scenario 1: History loaded (user scrolled to top).
         // Calculate the height difference to keep the scroll position exactly where the user was looking.
         if (prevScrollHeightRef.current > 0) {
             container.scrollTop = container.scrollHeight - prevScrollHeightRef.current;
             prevScrollHeightRef.current = 0; // Reset after adjustment
+            return; // Exit early since we handled the history load
         }
-            // Scenario 2: First application load.
+
+        // Scenario 2: First application load.
         // Instantly snap scroll to the bottom to show the most recent messages.
-        else if (isInitialLoad.current && messages.length > 0) {
+        if (isInitialLoad.current) {
             container.scrollTop = container.scrollHeight;
             isInitialLoad.current = false;
         }
-    }, [messages.length]);
+            // Scenario 3: A new message was added to the bottom!
+        // Smoothly scroll down to provide visual feedback for the new message.
+        else {
+            container.scrollTo({top: container.scrollHeight, behavior: 'smooth'});
+        }
+    }, [messages]);
 
     // Handle infinite scrolling mechanism
     const handleScroll = (e: UIEvent<HTMLDivElement>) => {
@@ -50,11 +59,6 @@ function App() {
     // just because the App component re-renders.
     const handleSend = useCallback((author: string, text: string) => {
         sendMessage({author, message: text});
-
-        // Provide immediate visual feedback by smoothly scrolling to the bottom
-        const container = scrollRef.current;
-        if (!container) return;
-        container.scrollTo({top: container.scrollHeight, behavior: 'smooth'});
     }, [sendMessage]);
 
     return (
