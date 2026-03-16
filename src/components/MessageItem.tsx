@@ -7,13 +7,18 @@ interface MessageItemProps {
     message: Message;
 }
 
+// Wrapped in memo to prevent re-rendering every single message when the chat list updates
 export const MessageItem = memo(({message}: MessageItemProps) => {
-    const isMine = message.author === 'You'
+    // Check if the message belongs to the current user to apply specific styling
+    const isMine = message.author === 'You';
+
     return (
         <div className={`message-item ${isMine ? 'mine' : ''}`}>
+            {/* Decoding text to handle potential HTML entities (like &#39;) from the backend safely */}
             <span className="message-author">{decodeText(message.author)}</span>
             <p className="message-text">{decodeText(message.message)}</p>
-            <time className="message-time">{formatDate(message.createdAt)}</time>
+            {/* Using semantic <time> tag with dateTime attribute for better accessibility */}
+            <time className="message-time" dateTime={message.createdAt}>{formatDate(message.createdAt)}</time>
         </div>
     );
 });

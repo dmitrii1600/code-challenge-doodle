@@ -7,7 +7,7 @@ import App from './App.tsx'
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            refetchOnWindowFocus: false, // щоб не смикати API зайвий раз
+            refetchOnWindowFocus: false,
             retry: 1,
         },
     },

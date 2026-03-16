@@ -5,13 +5,15 @@ interface MessageInputProps {
     isSending: boolean;
 }
 
+// Hardcoded author name for the current user's messages
 const AUTHOR_NAME = "You";
 
+// Wrapped in memo to prevent unnecessary re-renders when parent components update
 export const MessageInput = memo(({onSend, isSending}: MessageInputProps) => {
     const [text, setText] = useState('');
-
     const inputRef = useRef<HTMLInputElement>(null);
 
+    // Restore focus to the input field automatically after a message is sent
     useEffect(() => {
         if (!isSending && inputRef.current) {
             inputRef.current.focus();
@@ -19,10 +21,12 @@ export const MessageInput = memo(({onSend, isSending}: MessageInputProps) => {
     }, [isSending]);
 
     const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent page reload on form submit
+
+        // Only send if text is not empty and a request is not already in progress
         if (text.trim() && !isSending) {
             onSend(AUTHOR_NAME, text);
-            setText('');
+            setText(''); // Clear input after successful send
         }
     };
 
@@ -40,10 +44,12 @@ export const MessageInput = memo(({onSend, isSending}: MessageInputProps) => {
                     aria-label="Type your message"
                     autoFocus
                 />
-                <button type="submit"
-                        disabled={isSending || !text.trim()}
-                        className="send-button"
-                        aria-label="Send message"
+                <button
+                    type="submit"
+                    // Disable button to prevent empty messages or double submissions
+                    disabled={isSending || !text.trim()}
+                    className="send-button"
+                    aria-label="Send message"
                 >
                     Send
                 </button>
